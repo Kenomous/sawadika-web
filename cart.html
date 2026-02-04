@@ -95,6 +95,9 @@
         isFigmake: false,
         enableMetaTags: true,
       });
+      // The runtime ignores constructor overrides for code component URL.
+      // Force project-site base path support on GitHub Pages.
+      sitesRuntime.getCodeComponentURL = () => withBase(`/_components/v2/${SOURCE_HASH}.js`);
       } catch (err) {
         console.error('Bootstrap failed:', err);
         showBootError(String(err?.message || err));
