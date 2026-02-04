@@ -8,7 +8,30 @@
     <link rel="icon" href="./favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" href="./favicon.png" />
     <link rel="stylesheet" href="./styles.css" />
-    <script src="./data.js" defer></script>
+    <script src="./data.js"></script>
+    <style>
+      .tabs {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 0 0 16px;
+      }
+
+      .tab-btn {
+        border: 1px solid var(--line);
+        background: rgba(16, 12, 10, 0.45);
+        color: var(--text);
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .tab-btn.active {
+        border-color: var(--gold);
+        background: rgba(212, 166, 63, 0.16);
+      }
+    </style>
   </head>
   <body>
     <main class="page">
@@ -27,20 +50,39 @@
       <h1 class="section-title">Le Menu</h1>
       <p class="section-subtitle">Des plats signatures prepares minute. Prix clairs et commandes simplifiees.</p>
 
+      <section class="tabs" id="menu-tabs" aria-label="Categories du menu"></section>
       <section class="grid grid-3" id="menu-grid" aria-label="Liste des plats"></section>
     </main>
 
     <script>
+      const fallbackMenu = [
+        { id: "tha-1", category: "Thai", name: "Pad Thai crevettes", desc: "Nouilles de riz sautees, crevettes, soja, cacahuete.", price: 13.90 },
+        { id: "tha-2", category: "Thai", name: "Curry vert poulet", desc: "Lait de coco, basilic thai, legumes de saison.", price: 14.50 },
+        { id: "chi-1", category: "Chine", name: "Boeuf satay", desc: "Boeuf marine, sauce satay maison, riz parfume.", price: 15.00 },
+        { id: "chi-2", category: "Chine", name: "Poulet croustillant", desc: "Sauce aigre douce, sesame, wok de legumes.", price: 13.50 },
+        { id: "jap-1", category: "Japon", name: "Plateau sushi mix", desc: "12 pieces chef selection, gingembre et wasabi.", price: 16.90 },
+        { id: "jap-2", category: "Japon", name: "Donburi saumon", desc: "Riz vinaigre, saumon, avocat, sauce maison.", price: 14.90 },
+        { id: "ent-1", category: "Entrees", name: "Nems poulet x4", desc: "Nems croustillants servis avec sauce nuoc mam.", price: 6.50 },
+        { id: "des-1", category: "Desserts", name: "Mochis assortiment", desc: "Selection de mochis glaces du moment.", price: 5.90 }
+      ];
+
+      const cartKey = window.SAWADIKA_CART_KEY || "sawadika_cart";
+      const menuItems = Array.isArray(window.SAWADIKA_MENU) && window.SAWADIKA_MENU.length
+        ? window.SAWADIKA_MENU
+        : fallbackMenu;
+      const categories = ["Tous", ...new Set(menuItems.map((item) => item.category))];
+      let currentCategory = "Tous";
+
       function getCart() {
         try {
-          return JSON.parse(localStorage.getItem(window.SAWADIKA_CART_KEY) || "[]");
+          return JSON.parse(localStorage.getItem(cartKey) || "[]");
         } catch {
           return [];
         }
       }
 
       function setCart(cart) {
-        localStorage.setItem(window.SAWADIKA_CART_KEY, JSON.stringify(cart));
+        localStorage.setItem(cartKey, JSON.stringify(cart));
       }
 
       function addToCart(itemId) {
@@ -55,10 +97,31 @@
         alert("Plat ajoute au panier.");
       }
 
+      function renderTabs() {
+        const tabsRoot = document.getElementById("menu-tabs");
+        tabsRoot.innerHTML = "";
+        categories.forEach((category) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = `tab-btn${category === currentCategory ? " active" : ""}`;
+          btn.textContent = category;
+          btn.addEventListener("click", () => {
+            currentCategory = category;
+            renderTabs();
+            renderMenu();
+          });
+          tabsRoot.appendChild(btn);
+        });
+      }
+
       function renderMenu() {
         const root = document.getElementById("menu-grid");
         root.innerHTML = "";
-        window.SAWADIKA_MENU.forEach((item) => {
+        const visibleItems = currentCategory === "Tous"
+          ? menuItems
+          : menuItems.filter((item) => item.category === currentCategory);
+
+        visibleItems.forEach((item) => {
           const card = document.createElement("article");
           card.className = "card";
           card.innerHTML = `
@@ -78,6 +141,7 @@
         });
       }
 
+      renderTabs();
       renderMenu();
     </script>
   </body>
