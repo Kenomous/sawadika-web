@@ -64,6 +64,10 @@
         return withBase(`/_json/${BUNDLE_ID}${normalized}.json`);
       };
       const { SitesRuntime } = await import(withBase('/_runtimes/sites-runtime.f1acf34bc788f9df17f2ee3a84a21e7e84786dbc49effd44bc55890f70177c3e.js'));
+      // Must be patched before constructor runs, otherwise runtime tries /_components/... at domain root.
+      SitesRuntime.prototype.getCodeComponentURL = function () {
+        return withBase(`/_components/v2/${SOURCE_HASH}.js`);
+      };
       const sitesRuntime = new SitesRuntime({
         container: document.getElementById('container'),
         env: 'preview',
@@ -95,9 +99,6 @@
         isFigmake: false,
         enableMetaTags: true,
       });
-      // The runtime ignores constructor overrides for code component URL.
-      // Force project-site base path support on GitHub Pages.
-      sitesRuntime.getCodeComponentURL = () => withBase(`/_components/v2/${SOURCE_HASH}.js`);
       } catch (err) {
         console.error('Bootstrap failed:', err);
         showBootError(String(err?.message || err));
