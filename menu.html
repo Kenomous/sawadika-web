@@ -31,6 +31,98 @@
         border-color: var(--gold);
         background: rgba(212, 166, 63, 0.16);
       }
+
+      .group-card {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 0;
+        background: var(--card);
+        overflow: hidden;
+      }
+
+      .group-title {
+        margin: 0;
+        font-size: 28px;
+        font-family: Cinzel, Georgia, serif;
+      }
+
+      .group-desc {
+        margin: 4px 0 14px;
+        color: var(--muted);
+      }
+
+      .group-line {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .group-line:first-of-type {
+        border-top: 0;
+      }
+
+      .line-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .group-toggle {
+        cursor: pointer;
+        list-style: none;
+        padding: 16px 18px;
+      }
+
+      .group-toggle::-webkit-details-marker {
+        display: none;
+      }
+
+      .group-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .group-arrow {
+        font-size: 12px;
+        color: var(--gold-soft);
+        transform: rotate(0deg);
+        transition: transform 0.2s ease;
+      }
+
+      details[open] .group-arrow {
+        transform: rotate(180deg);
+      }
+
+      .group-content {
+        padding: 0 18px 14px;
+      }
+
+      .box-compo {
+        margin-top: 10px;
+        border-top: 1px solid var(--line);
+        padding-top: 10px;
+      }
+
+      .box-compo summary {
+        cursor: pointer;
+        color: var(--gold-soft);
+        font-weight: 700;
+      }
+
+      .box-compo ul {
+        margin: 8px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+      }
+
+      .box-compo li {
+        margin: 4px 0;
+      }
     </style>
   </head>
   <body>
@@ -83,8 +175,8 @@
       const configuredCategories = Array.isArray(window.SAWADIKA_CATEGORIES) && window.SAWADIKA_CATEGORIES.length
         ? window.SAWADIKA_CATEGORIES
         : fallbackCategories;
-      const categories = ["Tous", ...configuredCategories];
-      let currentCategory = "Tous";
+      const categories = configuredCategories;
+      let currentCategory = categories[0] || "";
 
       function getCart() {
         try {
@@ -107,7 +199,6 @@
           cart.push({ id: itemId, qty: 1 });
         }
         setCart(cart);
-        alert("Plat ajoute au panier.");
       }
 
       function renderTabs() {
@@ -130,24 +221,75 @@
       function renderMenu() {
         const root = document.getElementById("menu-grid");
         root.innerHTML = "";
-        const visibleItems = currentCategory === "Tous"
-          ? menuItems
-          : menuItems.filter((item) => item.category === currentCategory);
+        const visibleItems = menuItems.filter((item) => item.category === currentCategory);
 
-        visibleItems.forEach((item) => {
-          const card = document.createElement("article");
-          card.className = "card";
-          card.innerHTML = `
-            <div class="badge">${item.category}</div>
-            <h2 class="item-name">${item.name}</h2>
-            <p class="item-desc">${item.desc}</p>
-            <div class="item-footer">
-              <span class="price">${window.priceEUR(item.price)}</span>
-              <button class="btn btn-primary" type="button" data-id="${item.id}">Ajouter</button>
-            </div>
-          `;
-          root.appendChild(card);
-        });
+        const hasSubgroups = visibleItems.some((item) => item.subgroup);
+        root.className = hasSubgroups ? "grid" : "grid grid-3";
+
+        if (hasSubgroups) {
+          const groups = [...new Set(visibleItems.filter((x) => x.subgroup).map((x) => x.subgroup))];
+          groups.forEach((groupName) => {
+            const groupItems = visibleItems.filter((x) => x.subgroup === groupName);
+            const card = document.createElement("details");
+            card.className = "group-card";
+            const groupDesc = groupItems[0]?.groupDesc || "";
+            card.open = groups.length === 1;
+
+            card.innerHTML = `
+              <summary class="group-toggle">
+                <div class="group-header">
+                  <div>
+                    <h2 class="group-title">${groupName}</h2>
+                    <p class="group-desc">${groupDesc}</p>
+                  </div>
+                  <span class="group-arrow">▼</span>
+                </div>
+              </summary>
+              <div class="group-content"></div>
+            `;
+
+            const content = card.querySelector(".group-content");
+
+            groupItems.forEach((item) => {
+              const row = document.createElement("div");
+              row.className = "group-line";
+              row.innerHTML = `
+                <div class="line-left">
+                  <strong>${item.name}</strong>
+                  <span class="price">${window.priceEUR(item.price)}</span>
+                </div>
+                <button class="btn btn-primary" type="button" data-id="${item.id}">Ajouter</button>
+              `;
+              content.appendChild(row);
+            });
+
+            root.appendChild(card);
+          });
+        } else {
+          visibleItems.forEach((item) => {
+            const card = document.createElement("article");
+            card.className = "card";
+            const compositionHtml = Array.isArray(item.composition) && item.composition.length
+              ? `
+                <details class="box-compo">
+                  <summary>Voir composition</summary>
+                  <ul>${item.composition.map((line) => `<li>${line}</li>`).join("")}</ul>
+                </details>
+              `
+              : "";
+            card.innerHTML = `
+              <div class="badge">${item.category}</div>
+              <h2 class="item-name">${item.name}</h2>
+              <p class="item-desc">${item.desc}</p>
+              <div class="item-footer">
+                <span class="price">${window.priceEUR(item.price)}</span>
+                <button class="btn btn-primary" type="button" data-id="${item.id}">Ajouter</button>
+              </div>
+              ${compositionHtml}
+            `;
+            root.appendChild(card);
+          });
+        }
 
         root.querySelectorAll("button[data-id]").forEach((btn) => {
           btn.addEventListener("click", () => addToCart(btn.getAttribute("data-id")));
