@@ -3797,7 +3797,17 @@ const xa = ({ ...i }) => {
   );
 };
 function ba() {
-  const [i, r] = q(!1), [a, l] = q("home");
+  const O = () => {
+    const o = location.pathname.toLowerCase();
+    if (o.endsWith("/menu.html"))
+      return "menu";
+    if (o.endsWith("/reservation.html"))
+      return "reservation";
+    if (o.endsWith("/panier.html") || o.endsWith("/cart.html"))
+      return "cart";
+    const x = new URLSearchParams(location.search).get("view"), h = (location.hash || "").replace(/^#/, "");
+    return ["home", "menu", "reservation", "cart"].includes(x || h) ? x || h : "home";
+  }, [i, r] = q(!1), [a, l] = q(O);
   ke(() => {
     const c = () => {
       r(window.innerWidth < 768);
