@@ -32,8 +32,17 @@
       const firstPathSegment = location.pathname.split('/').filter(Boolean)[0] || '';
       const basePath = isGitHubPages && firstPathSegment ? `/${firstPathSegment}` : '';
       const withBase = (path) => `${basePath}${path}`;
+      const normalizeSiteUrl = (url) => {
+        let normalizedUrl = url || '/';
+        if (basePath && normalizedUrl.startsWith(basePath)) {
+          normalizedUrl = normalizedUrl.slice(basePath.length) || '/';
+        }
+        if (!normalizedUrl.startsWith('/')) normalizedUrl = `/${normalizedUrl}`;
+        return normalizedUrl;
+      };
       const getPagePath = (url) => {
-        const normalized = url === '/' ? '/_index' : url;
+        const siteUrl = normalizeSiteUrl(url);
+        const normalized = siteUrl === '/' ? '/_index' : siteUrl;
         return withBase(`/_json/${BUNDLE_ID}${normalized}.json`);
       };
       const { SitesRuntime } = await import(withBase('/_runtimes/sites-runtime.f1acf34bc788f9df17f2ee3a84a21e7e84786dbc49effd44bc55890f70177c3e.js'));
