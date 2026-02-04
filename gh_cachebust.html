@@ -64,24 +64,9 @@
         return withBase(`/_json/${BUNDLE_ID}${normalized}.json`);
       };
       const { SitesRuntime } = await import(withBase('/_runtimes/sites-runtime.f1acf34bc788f9df17f2ee3a84a21e7e84786dbc49effd44bc55890f70177c3e.js'));
-      const initialUrl = normalizeSiteUrl(location.pathname);
-      const historyShim = {
-        current: { url: initialUrl, search: location.search },
-        get href() {
-          return `${this.current.url}${this.current.search || ''}`;
-        },
-        push(next) {
-          const url = `${next.url || '/'}${next.search || ''}`;
-          this.current = { url: next.url || '/', search: next.search || '' };
-          window.history.pushState({}, '', url);
-        },
-        back() { window.history.back(); },
-        forward() { window.history.forward(); }
-      };
       const sitesRuntime = new SitesRuntime({
         container: document.getElementById('container'),
         env: 'preview',
-        history: historyShim,
         bundleId: BUNDLE_ID,
         getPage: async (url) => {
           const response = await fetch(getPagePath(url), { method: 'GET', credentials: 'include' });
@@ -110,9 +95,6 @@
         isFigmake: false,
         enableMetaTags: true,
       });
-      // Override after construction and before first location materialization.
-      sitesRuntime.getCodeComponentURL = () => withBase(`/_components/v2/${SOURCE_HASH}.js`);
-      sitesRuntime.setLocation({ url: initialUrl, search: location.search }, true);
       } catch (err) {
         console.error('Bootstrap failed:', err);
         showBootError(String(err?.message || err));
