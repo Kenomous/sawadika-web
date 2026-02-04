@@ -26,6 +26,22 @@
     
     <script data-template-id="country-code">window.__cf_country = "FR"</script>
     <script type="module">
+      const showBootError = (message) => {
+        const el = document.createElement('div');
+        el.style.cssText = 'position:fixed;inset:0;background:#111;color:#fff;padding:24px;font:14px/1.5 Arial,sans-serif;z-index:999999;';
+        el.innerHTML = `<h2 style="margin:0 0 12px">Erreur de chargement</h2><pre style="white-space:pre-wrap;margin:0">${message}</pre>`;
+        document.body.appendChild(el);
+      };
+      window.addEventListener('error', (e) => {
+        console.error('Global error:', e.error || e.message);
+        showBootError(String(e.error?.message || e.message || 'Unknown error'));
+      });
+      window.addEventListener('unhandledrejection', (e) => {
+        const msg = e.reason?.message || String(e.reason || 'Unhandled promise rejection');
+        console.error('Unhandled rejection:', e.reason);
+        showBootError(msg);
+      });
+      try {
       const BUNDLE_ID = '51fb1154-702d-460e-b2bf-06e538567d0b';
       const SOURCE_HASH = 'fffa3b0727090c07893a647bb46e3dd9a5a779a4';
       const isGitHubPages = location.hostname.endsWith('github.io');
@@ -50,7 +66,7 @@
       const { SitesRuntime } = await import(withBase('/_runtimes/sites-runtime.f1acf34bc788f9df17f2ee3a84a21e7e84786dbc49effd44bc55890f70177c3e.js'));
       const sitesRuntime = new SitesRuntime({
         container: document.getElementById('container'),
-        env: 'published',
+        env: 'preview',
         bundleId: BUNDLE_ID,
         getPage: async (url) => {
           const response = await fetch(getPagePath(url), { method: 'GET', credentials: 'include' });
@@ -76,9 +92,13 @@
         withBaseStyles: false,
         reportingDomain: "https://www.figma.com",
         bundleCreationDate: '2026-02-03 18:05:07 UTC',
-        isFigmake: true,
+        isFigmake: false,
         enableMetaTags: true,
       });
+      } catch (err) {
+        console.error('Bootstrap failed:', err);
+        showBootError(String(err?.message || err));
+      }
     </script>
     
     <div id="container"><div class="tailwind css-uwf2km css-exq74d"></div></div>

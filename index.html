@@ -66,7 +66,7 @@
       const { SitesRuntime } = await import(withBase('/_runtimes/sites-runtime.f1acf34bc788f9df17f2ee3a84a21e7e84786dbc49effd44bc55890f70177c3e.js'));
       const sitesRuntime = new SitesRuntime({
         container: document.getElementById('container'),
-        env: 'published',
+        env: 'preview',
         bundleId: BUNDLE_ID,
         getPage: async (url) => {
           const response = await fetch(getPagePath(url), { method: 'GET', credentials: 'include' });
@@ -92,7 +92,7 @@
         withBaseStyles: false,
         reportingDomain: "https://www.figma.com",
         bundleCreationDate: '2026-02-03 18:05:07 UTC',
-        isFigmake: true,
+        isFigmake: false,
         enableMetaTags: true,
       });
       } catch (err) {
