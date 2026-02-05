@@ -135,7 +135,7 @@
         <nav class="nav" aria-label="Navigation principale">
           <a class="active" href="./menu.html">Menu</a>
           <a href="./reservation.html">Reserver</a>
-          <a href="./panier.html">Panier</a>
+          <a href="./panier.html">Panier <span class="cart-badge" id="cart-badge">0</span></a>
         </nav>
       </header>
 
@@ -190,15 +190,51 @@
         localStorage.setItem(cartKey, JSON.stringify(cart));
       }
 
-      function addToCart(itemId) {
+      function getCartCount(cart) {
+        return cart.reduce((sum, line) => sum + (line.qty || 0), 0);
+      }
+
+      function updateCartBadge() {
+        const badge = document.getElementById("cart-badge");
+        if (!badge) return;
+        const count = getCartCount(getCart());
+        badge.textContent = String(count);
+        badge.classList.toggle("show", count > 0);
+        badge.classList.remove("bump");
+        if (count > 0) {
+          requestAnimationFrame(() => badge.classList.add("bump"));
+        }
+      }
+
+      function getQty(itemId) {
+        const cart = getCart();
+        const line = cart.find((x) => x.id === itemId);
+        return line ? line.qty : 0;
+      }
+
+      function updateQtyDisplays(itemId, qty) {
+        document.querySelectorAll(`[data-qty-for="${itemId}"]`).forEach((el) => {
+          el.textContent = String(qty);
+        });
+      }
+
+      function updateQuantity(itemId, delta, triggerButton) {
         const cart = getCart();
         const current = cart.find((x) => x.id === itemId);
         if (current) {
-          current.qty += 1;
-        } else {
+          current.qty += delta;
+        } else if (delta > 0) {
           cart.push({ id: itemId, qty: 1 });
         }
-        setCart(cart);
+        const cleaned = cart.filter((x) => x.qty > 0);
+        const newQty = cleaned.find((x) => x.id === itemId)?.qty || 0;
+        setCart(cleaned);
+        updateCartBadge();
+        updateQtyDisplays(itemId, newQty);
+        if (triggerButton) {
+          triggerButton.classList.remove("btn-anim");
+          requestAnimationFrame(() => triggerButton.classList.add("btn-anim"));
+        }
       }
 
       function renderTabs() {
@@ -253,12 +289,17 @@
             groupItems.forEach((item) => {
               const row = document.createElement("div");
               row.className = "group-line";
+              const qty = getQty(item.id);
               row.innerHTML = `
                 <div class="line-left">
                   <strong>${item.name}</strong>
                   <span class="price">${window.priceEUR(item.price)}</span>
                 </div>
-                <button class="btn btn-primary" type="button" data-id="${item.id}">Ajouter</button>
+                <div class="qty-control">
+                  <button class="qty-btn" type="button" data-action="minus" data-id="${item.id}">-</button>
+                  <span class="qty-count" data-qty-for="${item.id}">${qty}</span>
+                  <button class="qty-btn" type="button" data-action="plus" data-id="${item.id}">+</button>
+                </div>
               `;
               content.appendChild(row);
             });
@@ -277,13 +318,18 @@
                 </details>
               `
               : "";
+            const qty = getQty(item.id);
             card.innerHTML = `
               <div class="badge">${item.category}</div>
               <h2 class="item-name">${item.name}</h2>
               <p class="item-desc">${item.desc}</p>
               <div class="item-footer">
                 <span class="price">${window.priceEUR(item.price)}</span>
-                <button class="btn btn-primary" type="button" data-id="${item.id}">Ajouter</button>
+                <div class="qty-control">
+                  <button class="qty-btn" type="button" data-action="minus" data-id="${item.id}">-</button>
+                  <span class="qty-count" data-qty-for="${item.id}">${qty}</span>
+                  <button class="qty-btn" type="button" data-action="plus" data-id="${item.id}">+</button>
+                </div>
               </div>
               ${compositionHtml}
             `;
@@ -291,13 +337,22 @@
           });
         }
 
-        root.querySelectorAll("button[data-id]").forEach((btn) => {
-          btn.addEventListener("click", () => addToCart(btn.getAttribute("data-id")));
-        });
+        if (!root.dataset.bound) {
+          root.addEventListener("click", (event) => {
+            const btn = event.target.closest("button[data-action]");
+            if (!btn) return;
+            const id = btn.getAttribute("data-id");
+            const action = btn.getAttribute("data-action");
+            const delta = action === "plus" ? 1 : -1;
+            updateQuantity(id, delta, btn);
+          });
+          root.dataset.bound = "1";
+        }
       }
 
       renderTabs();
       renderMenu();
+      updateCartBadge();
     </script>
   </body>
 </html>
