@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Reservation en ligne Sawadika." />
-    <title>Reservation | Sawadika</title>
+    <meta name="description" content="Réservation en ligne Sawadika." />
+    <title>Réservation | Sawadika</title>
     <link rel="icon" href="./favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" href="./favicon.png" />
     <link rel="stylesheet" href="./styles.css" />
@@ -19,13 +19,13 @@
         </a>
         <nav class="nav" aria-label="Navigation principale">
           <a href="./menu.html">Menu</a>
-          <a class="active" href="./reservation.html">Reserver</a>
+          <a class="active" href="./reservation.html">Réserver</a>
           <a href="./panier.html">Panier</a>
         </nav>
       </header>
 
       <h1 class="section-title">Reservation</h1>
-      <p class="section-subtitle">Formulaire rapide. L email est prepare automatiquement a l envoi.</p>
+      <p class="section-subtitle">Réservez votre table en quelques secondes et assurez-vous une expérience fluide dès votre arrivée.</p>
 
       <section class="card">
         <form class="form" id="reservation-form">
@@ -35,7 +35,7 @@
               <input id="name" name="name" required />
             </div>
             <div>
-              <label for="phone">Telephone</label>
+              <label for="phone">Téléphone</label>
               <input id="phone" name="phone" required />
             </div>
           </div>
@@ -63,12 +63,12 @@
           </div>
 
           <div>
-            <label for="notes">Demandes speciales</label>
+            <label for="notes">Demandes spéciales</label>
             <textarea id="notes" name="notes" placeholder="Allergies, chaise bebe, etc."></textarea>
           </div>
 
           <div>
-            <button type="submit" class="btn btn-primary">Envoyer la reservation</button>
+            <button type="submit" class="btn btn-primary">Envoyer la réservation</button>
           </div>
           <p class="notice">Destinataire: sawadika689@gmail.com</p>
         </form>
@@ -85,13 +85,13 @@
       form.addEventListener("submit", (e) => {
         e.preventDefault();
         const fd = new FormData(form);
-        const subject = encodeURIComponent("Reservation Sawadika");
+        const subject = encodeURIComponent("Réservation Sawadika");
         const body = encodeURIComponent(
           [
-            "Nouvelle reservation:",
+            "Nouvelle réservation:",
             "",
             `Nom: ${fd.get("name")}`,
-            `Telephone: ${fd.get("phone")}`,
+            `Téléphone: ${fd.get("phone")}`,
             `Email: ${fd.get("email")}`,
             `Personnes: ${fd.get("guests")}`,
             `Date: ${fd.get("date")}`,
@@ -105,3 +105,5 @@
     </script>
   </body>
 </html>
+
+

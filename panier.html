@@ -19,13 +19,13 @@
         </a>
         <nav class="nav" aria-label="Navigation principale">
           <a href="./menu.html">Menu</a>
-          <a href="./reservation.html">Reserver</a>
+          <a href="./reservation.html">Réserver</a>
           <a class="active" href="./panier.html">Panier</a>
         </nav>
       </header>
 
       <h1 class="section-title">Panier</h1>
-      <p class="section-subtitle">Validez votre commande avec nom, telephone et heure de recuperation.</p>
+      <p class="section-subtitle">Validez votre commande avec nom, téléphone et heure de récupération.</p>
 
       <section class="grid grid-2">
         <article class="card">
@@ -46,11 +46,11 @@
               <input id="customer-name" name="customerName" required />
             </div>
             <div>
-              <label for="customer-phone">Telephone</label>
+              <label for="customer-phone">Téléphone</label>
               <input id="customer-phone" name="customerPhone" required />
             </div>
             <div>
-              <label for="pickup-time">Heure de recuperation (min +20 min)</label>
+              <label for="pickup-time">Heure de récupération (min +20 min)</label>
               <input id="pickup-time" name="pickupTime" type="datetime-local" required />
             </div>
             <div>
@@ -168,7 +168,7 @@
 
         setMinPickup();
         if (pickupInput.value < pickupInput.min) {
-          alert("L heure de recuperation doit etre au minimum dans 20 minutes.");
+          alert("L'heure de récupération doit être au minimum dans 20 minutes.");
           return;
         }
 
@@ -195,8 +195,8 @@
             `Total: ${window.priceEUR(total)}`,
             "",
             `Nom: ${fd.get("customerName")}`,
-            `Telephone: ${fd.get("customerPhone")}`,
-            `Recuperation: ${fd.get("pickupTime")}`,
+            `Téléphone: ${fd.get("customerPhone")}`,
+            `Récupération: ${fd.get("pickupTime")}`,
             `Commentaire: ${fd.get("orderNotes") || "Aucun"}`
           ].join("\n")
         );
@@ -209,3 +209,5 @@
     </script>
   </body>
 </html>
+
+

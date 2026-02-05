@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Menu Sawadika : specialites thai, chinoises et japonaises." />
+    <meta name="description" content="Menu Sawadika : spécialités thaï, chinoises et japonaises." />
     <title>Menu | Sawadika</title>
     <link rel="icon" href="./favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" href="./favicon.png" />
@@ -134,7 +134,7 @@
         </a>
         <nav class="nav" aria-label="Navigation principale">
           <a class="active" href="./menu.html">Menu</a>
-          <a href="./reservation.html">Reserver</a>
+          <a href="./reservation.html">Réserver</a>
           <a href="./panier.html">Panier <span class="cart-badge" id="cart-badge">0</span></a>
         </nav>
       </header>
@@ -142,20 +142,20 @@
       <h1 class="section-title">Le Menu</h1>
       <p class="section-subtitle">Un menu où tradition et modernité se rencontrent, préparé à la commande pour une fraîcheur optimale.</p>
 
-      <section class="tabs" id="menu-tabs" aria-label="Categories du menu"></section>
+      <section class="tabs" id="menu-tabs" aria-label="Catégories du menu"></section>
       <section class="grid grid-3" id="menu-grid" aria-label="Liste des plats"></section>
     </main>
 
     <script>
       const fallbackMenu = [
-        { id: "tha-1", category: "Thai Food", name: "Pad Thai crevettes", desc: "Nouilles de riz sautees, crevettes, soja, cacahuete.", price: 13.90 },
-        { id: "tha-2", category: "Thai Food", name: "Curry vert poulet", desc: "Lait de coco, basilic thai, legumes de saison.", price: 14.50 },
-        { id: "ind-1", category: "Indian Food", name: "Boeuf satay", desc: "Boeuf marine, sauce satay maison, riz parfume.", price: 15.00 },
-        { id: "ind-2", category: "Indian Food", name: "Poulet croustillant", desc: "Sauce aigre douce, sesame, wok de legumes.", price: 13.50 },
-        { id: "jap-1", category: "Jap Food", name: "Plateau sushi mix", desc: "12 pieces chef selection, gingembre et wasabi.", price: 16.90 },
-        { id: "jap-2", category: "Jap Food", name: "Donburi saumon", desc: "Riz vinaigre, saumon, avocat, sauce maison.", price: 14.90 },
-        { id: "ent-1", category: "Entree", name: "Nems poulet x4", desc: "Nems croustillants servis avec sauce nuoc mam.", price: 6.50 },
-        { id: "des-1", category: "Dessert", name: "Mochis assortiment", desc: "Selection de mochis glaces du moment.", price: 5.90 }
+        { id: "tha-1", category: "Thai Food", name: "Pad Thai crevettes", desc: "Nouilles de riz sautées, crevettes, soja, cacahuète.", price: 13.90 },
+        { id: "tha-2", category: "Thai Food", name: "Curry vert poulet", desc: "Lait de coco, basilic thaï, légumes de saison.", price: 14.50 },
+        { id: "ind-1", category: "Indian Food", name: "Bœuf satay", desc: "Bœuf mariné, sauce satay maison, riz parfumé.", price: 15.00 },
+        { id: "ind-2", category: "Indian Food", name: "Poulet croustillant", desc: "Sauce aigre-douce, sésame, wok de légumes.", price: 13.50 },
+        { id: "jap-1", category: "Jap Food", name: "Plateau sushi mix", desc: "12 pièces chef sélection, gingembre et wasabi.", price: 16.90 },
+        { id: "jap-2", category: "Jap Food", name: "Donburi saumon", desc: "Riz vinaigré, saumon, avocat, sauce maison.", price: 14.90 },
+        { id: "ent-1", category: "Entrée", name: "Nems poulet x4", desc: "Nems croustillants servis avec sauce nuoc-mâm.", price: 6.50 },
+        { id: "des-1", category: "Dessert", name: "Mochis assortiment", desc: "Sélection de mochis glacés du moment.", price: 5.90 }
       ];
 
       const cartKey = window.SAWADIKA_CART_KEY || "sawadika_cart";
@@ -163,7 +163,7 @@
         ? window.SAWADIKA_MENU
         : fallbackMenu;
       const fallbackCategories = [
-        "Entree",
+        "Entrée",
         "Thai Food",
         "Indian Food",
         "Jap Food",
@@ -360,3 +360,5 @@
     </script>
   </body>
 </html>
+
+
